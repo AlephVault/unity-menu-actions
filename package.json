@@ -1,0 +1,15 @@
+{
+  "name": "com.alephvault.unity.menuactions",
+  "version": "0.0.1",
+  "displayName": "Aleph Vault - Unity - Menu Actions",
+  "description": "Some utilities to create editor/menu actions.",
+  "unity": "2018.1",
+  "dependencies": {
+    "com.alephvault.unity.layout": "0.0.1"
+  },
+  "author": {
+    "name": "Aleph Vault",
+    "email": "info@alephvault.com",
+    "url": "http://www.alephvault.com"
+  }
+}
