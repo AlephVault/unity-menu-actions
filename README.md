@@ -1,5 +1,5 @@
 # unity-menu-actions
-Contains some utilities to create editor/menu actions.
+This package contains some utilities to create editor/menu actions.
 
 # Install
 To install this package you need to open the package manager in your project and:
