@@ -19,7 +19,10 @@ namespace AlephVault.Unity.MenuActions
             ///   Gets the stylesheets to use.
             /// </summary>
             /// <returns>The stylesheets to use</returns>
-            protected abstract StyleSheet[] GetStyleSheets();
+            protected virtual StyleSheet[] GetStyleSheets()
+            {
+                return Array.Empty<StyleSheet>();
+            }
 
             /// <summary>
             ///   Tells which element is the pivot to resolve the size.
