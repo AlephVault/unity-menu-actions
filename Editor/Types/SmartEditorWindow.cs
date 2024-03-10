@@ -1,117 +1,60 @@
-using System;
 using UnityEditor;
 using UnityEngine;
-using UnityEngine.UIElements;
 
 namespace AlephVault.Unity.MenuActions
 {
     namespace Types
     {
-        public abstract class SmartEditorWindow<T> : EditorWindow where T : SmartEditorWindow<T>
+        /// <summary>
+        ///   This is a smart editor class. It auto-adjusts the size.
+        /// </summary>
+        public abstract class SmartEditorWindow : EditorWindow
         {
             /// <summary>
-            ///   Gets the document to use.
+            ///   Runs all the inner GUI logic but wrapping it in a
+            ///   Vertical group, and then calculates the size so it
+            ///   can update the size later. It runs the post-render
+            ///   logic (e.g. buttons execution logic) AFTER the new
+            ///   size is applied.
             /// </summary>
-            /// <returns>The document to use</returns>
-            protected abstract VisualTreeAsset GetDocument();
-
-            /// <summary>
-            ///   Gets the stylesheets to use.
-            /// </summary>
-            /// <returns>The stylesheets to use</returns>
-            protected virtual StyleSheet[] GetStyleSheets()
+            private void OnGUI()
             {
-                return Array.Empty<StyleSheet>();
-            }
-
-            /// <summary>
-            ///   Tells which element is the pivot to resolve the size.
-            /// </summary>
-            protected virtual VisualElement GetContainer()
-            {
-                return rootVisualElement.Q<VisualElement>("Root");
-            }
-
-            /// <summary>
-            ///   Loads a document from file.
-            /// </summary>
-            /// <param name="path">The path to the UXML file</param>
-            /// <returns>The document asset</returns>
-            protected VisualTreeAsset LoadDocument(string path)
-            {
-                return AssetDatabase.LoadAssetAtPath<VisualTreeAsset>(path);
-            }
-
-            /// <summary>
-            ///   Loads a stylesheet from file.
-            /// </summary>
-            /// <param name="path">The path to the USS file</param>
-            /// <returns>The stylesheet asset</returns>
-            protected StyleSheet LoadSheet(string path)
-            {
-                return AssetDatabase.LoadAssetAtPath<StyleSheet>(path);
-            }
-
-            private void InitDocument()
-            {
-                rootVisualElement.Add(GetDocument().Instantiate());
-                foreach (StyleSheet styleSheet in GetStyleSheets())
+                Rect r = EditorGUILayout.BeginVertical();
+                try
                 {
-                    rootVisualElement.styleSheets.Add(styleSheet);
+                    OnAdjustedGUI();
                 }
-            }
+                finally
+                {
+                    // r WILL have a value by this time.
+                    // It is important that we close here.
+                    EditorGUILayout.EndVertical();
+                    minSize = r.size + new Vector2(
+                        0, GetVerticalSpacesCount() * EditorGUIUtility.standardVerticalSpacing
+                    );
+                    maxSize = minSize;
+                }
 
-            private void UpdateSize()
-            {
-                var element = GetContainer();
-                var width = element.resolvedStyle.width;
-                var height = element.resolvedStyle.height;
-                Debug.Log($"Container: {element} Width: {width} Height: {height}");
-                minSize = new Vector2(width, height);
-                maxSize = minSize;
-            }
-
-            /// <summary>
-            ///   Executes the inner action and then refreshes
-            ///   the size of the window.
-            /// </summary>
-            /// <param name="action">The action to execute</param>
-            protected void DoAndUpdateSize(Action action)
-            {
-                action();
-                rootVisualElement.schedule.Execute(UpdateSize).StartingIn(100);
+                OnAfterAdjustedGUI();
             }
 
             /// <summary>
-            ///   Performs a setup over the rootVisualElement data.
+            ///   Returns the amount of vertical spacings to use when rendering.
             /// </summary>
-            protected abstract void Setup();
-
-            /// <summary>
-            ///   Shows a window and sets its title.
-            /// </summary>
-            /// <param name="title">The title content</param>
-            public static void ShowSmart(GUIContent title)
+            protected virtual uint GetVerticalSpacesCount()
             {
-                T window = CreateInstance<T>();
-                window.titleContent = title;
-                window.ShowUtility();
+                return 3;
             }
 
             /// <summary>
-            ///   Shows a window and sets its title.
+            ///   Defines all the GUI that will be rendered.
             /// </summary>
-            /// <param name="title">The title content</param>
-            public static void ShowSmart(string title)
-            {
-                ShowSmart(new GUIContent(title));
-            }
-
-            private void OnEnable()
-            {
-                DoAndUpdateSize(InitDocument);
-                Setup();
-            }
+            protected virtual void OnAdjustedGUI() {}
+            
+            /// <summary>
+            ///   Applies whatever post-render logic is needed.
+            /// </summary>
+            protected virtual void OnAfterAdjustedGUI() {}
         }
     }
 }
