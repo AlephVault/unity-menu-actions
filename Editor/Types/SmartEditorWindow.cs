@@ -91,7 +91,7 @@ namespace AlephVault.Unity.MenuActions
             ///   Shows a window and sets its title.
             /// </summary>
             /// <param name="title">The title content</param>
-            protected static void ShowSmart(GUIContent title)
+            public static void ShowSmart(GUIContent title)
             {
                 T window = CreateInstance<T>();
                 window.titleContent = title;
@@ -102,7 +102,7 @@ namespace AlephVault.Unity.MenuActions
             ///   Shows a window and sets its title.
             /// </summary>
             /// <param name="title">The title content</param>
-            protected static void ShowSmart(string title)
+            public static void ShowSmart(string title)
             {
                 ShowSmart(new GUIContent(title));
             }
