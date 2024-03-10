@@ -91,7 +91,7 @@ namespace AlephVault.Unity.MenuActions
             /// </summary>
             /// <param name="action">The action to execute</param>
             /// <param name="closeType">Whether to close (and how) or not the window</param>
-            protected void SmartExecute(Action action, CloseType closeType = CloseType.NoClose)
+            protected void SmartExecute(Action action, CloseType closeType = CloseType.OnSuccess)
             {
                 Action finalAction;
                 switch (closeType)
@@ -132,7 +132,7 @@ namespace AlephVault.Unity.MenuActions
             /// <param name="action">The action to execute</param>
             /// <param name="closeType">Whether to close (and how) or not the window</param>
             /// <returns>Whether the button was pressed or not</returns>
-            protected bool SmartButton(string text, Action action, CloseType closeType = CloseType.NoClose)
+            protected bool SmartButton(string text, Action action, CloseType closeType = CloseType.OnSuccess)
             {
                 if (GUILayout.Button(text))
                 {
