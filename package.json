@@ -3,7 +3,7 @@
   "version": "0.0.2",
   "displayName": "Aleph Vault - Unity - Menu Actions",
   "description": "Some utilities to create editor/menu actions.",
-  "unity": "2023.1",
+  "unity": "2018.1",
   "dependencies": {
     "com.alephvault.unity.layout": "0.0.1"
   },
