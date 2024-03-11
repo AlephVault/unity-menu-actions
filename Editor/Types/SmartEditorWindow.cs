@@ -45,7 +45,6 @@ namespace AlephVault.Unity.MenuActions
             /// </summary>
             private void OnGUI()
             {
-                float forcedWidth = GetSmartWidth();
                 Rect r = EditorGUILayout.BeginVertical();
 
                 try
