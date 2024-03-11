@@ -26,6 +26,17 @@ namespace AlephVault.Unity.MenuActions
             private List<Action> afterAdjustedGUI = new();
 
             /// <summary>
+            ///   A width to be forced to the window. If positive,
+            ///   it will be the width of the window. Otherwise,
+            ///   it will be disabled and guessed from the rect.
+            /// </summary>
+            /// <returns>The forced width</returns>
+            protected virtual float GetSmartWidth()
+            {
+                return 400;
+            }
+            
+            /// <summary>
             ///   Runs all the inner GUI logic but wrapping it in a
             ///   Vertical group, and then calculates the size so it
             ///   can update the size later. It runs the post-render
@@ -34,7 +45,9 @@ namespace AlephVault.Unity.MenuActions
             /// </summary>
             private void OnGUI()
             {
+                float forcedWidth = GetSmartWidth();
                 Rect r = EditorGUILayout.BeginVertical();
+
                 try
                 {
                     OnAdjustedGUI();
@@ -44,23 +57,27 @@ namespace AlephVault.Unity.MenuActions
                     // r WILL have a value by this time.
                     // It is important that we close here.
                     EditorGUILayout.EndVertical();
-                    minSize = r.size + new Vector2(
-                        0, GetVerticalSpacesCount() * EditorGUIUtility.standardVerticalSpacing
-                    );
-                    maxSize = minSize;
+
+                    float buffer = 2f * EditorGUIUtility.standardVerticalSpacing;
+                    if (r.size != Vector2.zero)
+                    {
+                        // The cached width stays forever. It is determined
+                        // from scratch and MIGHT be changed later, but it
+                        // is typically set only once and never again. On
+                        // the other hand, the height may always be forced.
+                        float width = GetSmartWidth();
+                        if (width <= 0)
+                        {
+                            width = r.size.x + buffer;
+                        }
+
+                        maxSize = minSize = new(width, r.size.y + buffer);
+                    }
                 }
 
                 OnAfterAdjustedGUI();
             }
-
-            /// <summary>
-            ///   Returns the amount of vertical spacings to use when rendering.
-            /// </summary>
-            protected virtual uint GetVerticalSpacesCount()
-            {
-                return 3;
-            }
-
+            
             /// <summary>
             ///   Defines all the GUI that will be rendered.
             /// </summary>
