@@ -23,7 +23,6 @@ namespace AlephVault.Unity.MenuActions
             public static GUIStyle GetSingleLabelStyle()
             {
                 GUIStyle style = GetWordWrappingStyle();
-                style.wordWrap = true;
                 style.margin.left = 6;
                 style.margin.right = 6;
                 style.margin.bottom = 3;
